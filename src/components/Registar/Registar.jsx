@@ -1,8 +1,11 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import React from "react";
+import React, { useState } from "react";
 import { auth } from "../../firebase.init";
 
 const Registar = () => {
+  // 3.0 my requirement is showing the error message for password
+  const [errorMsg, setErrorMsg] = useState("");
+
   // 1.1 created handleRegister
   const handleRegistar = (e) => {
     e.preventDefault();
@@ -11,6 +14,9 @@ const Registar = () => {
     const password = e.target.password.value;
     console.log(email, password);
 
+    // 3.3 after error message shownit will auto remove so
+    setErrorMsg("");
+
     // 2.8 in handle register use createUserWithEmailAndPassword with 3 parameter from doc
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
@@ -18,6 +24,8 @@ const Registar = () => {
       })
       .catch((err) => {
         console.log(err);
+        // 3.1 set the error message from doc which is error.message
+        setErrorMsg(err.message);
       });
   };
   // 1.0 created two input field email, password
@@ -80,9 +88,8 @@ const Registar = () => {
         <input
           name="password"
           type="password"
-          required
           placeholder="Password"
-          //   minlength="8"
+          minlength="5"
           /* pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
           title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" */
         />
@@ -98,6 +105,8 @@ const Registar = () => {
       <button className="btn btn-primary" type="submit">
         Submit
       </button>
+      {/* 3.2 show the error message in ui */}
+      {errorMsg && <p>{errorMsg}</p>}
     </form>
   );
 };
