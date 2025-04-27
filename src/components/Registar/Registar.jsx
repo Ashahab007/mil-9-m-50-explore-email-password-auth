@@ -2,6 +2,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../firebase.init";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { Link } from "react-router";
 
 const Registar = () => {
   // 3.0 my requirement is showing the error message for password that's why define a state
@@ -56,13 +57,16 @@ const Registar = () => {
       );
       return;
     }
+    // 3.3 reset error i.e error message is not shown if the requirement is true
+    setErrorMsg("");
+
+    // 4.2 if error not occured  nothing will show from success i.e it will remove the shown success message from the ui
+    setSuccess(false);
 
     // 2.8 in handle register use createUserWithEmailAndPassword with 3 parameter from doc
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
         console.log(result);
-        // 3.3 reset error i.e error message is not shown if the requirement is true
-        setErrorMsg("");
 
         // 4.1 setSuccess true
         setSuccess(true);
@@ -71,8 +75,6 @@ const Registar = () => {
         console.log(err);
         // 3.1 set the err.message in setErrorMsg from documentation
         setErrorMsg(err.message);
-        // 4.2 if error not occured  nothing will show from success i.e it will remove the shown success message from the ui
-        setSuccess(false);
       });
   };
   // 1.0 created two input field email, password
@@ -165,6 +167,12 @@ const Registar = () => {
         <input type="checkbox" name="checkbox" className="checkbox" />
         Accept Terms and Conditions
       </label>
+      <p>
+        Already have account?{" "}
+        <span className="text-blue-500">
+          <Link to="/login">Login</Link>
+        </span>
+      </p>
 
       <br />
 
