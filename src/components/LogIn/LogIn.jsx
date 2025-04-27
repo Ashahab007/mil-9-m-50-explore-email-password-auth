@@ -1,5 +1,8 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import React, { useRef, useState } from "react";
 import { auth } from "../../firebase.init";
 import { Link } from "react-router";
 
@@ -7,6 +10,10 @@ import { Link } from "react-router";
 const LogIn = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [success, setSuccess] = useState(false);
+
+  // 10.0 now my condition is using forget password to reset the password. from documentation "Send a password reset email" get the code. But u have to know that, the forget password is not linked with onSubmit button. So to get the data from dom we have to use useRef()
+  const emailRef = useRef();
+
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -31,6 +38,15 @@ const LogIn = () => {
         setErrorMsg(err.message);
       });
   };
+  // 10.2 use sendPasswordResetEmail from documentation
+  const handleForgetPassword = () => {
+    console.log(emailRef.current.value);
+    const email = emailRef.current.value;
+
+    sendPasswordResetEmail(auth, email)
+      .then(() => alert("An email has sent."))
+      .catch((err) => console.log(err));
+  };
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col">
@@ -43,6 +59,8 @@ const LogIn = () => {
               <label className="label">Email</label>
               <input
                 type="email"
+                // 10.1 set ref
+                ref={emailRef}
                 name="email"
                 className="input"
                 placeholder="Email"
@@ -55,7 +73,10 @@ const LogIn = () => {
                 placeholder="Password"
               />
               <div>
-                <a className="link link-hover">Forgot password?</a>
+                {/*  10.3 set handleForgetPassword*/}
+                <a onClick={handleForgetPassword} className="link link-hover">
+                  Forgot password?
+                </a>
                 <p>
                   Don't have account? Please{" "}
                   <span className="text-blue-500">
