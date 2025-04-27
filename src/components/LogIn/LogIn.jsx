@@ -45,7 +45,7 @@ const LogIn = () => {
 
     sendPasswordResetEmail(auth, email)
       .then(() => alert("An email has sent."))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.message));
   };
   return (
     <div className="hero bg-base-200 min-h-screen">
