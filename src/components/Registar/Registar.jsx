@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../firebase.init";
@@ -28,6 +29,11 @@ const Registar = () => {
     // 7.1 get the checked state value
     const terms = e.target.checkbox.checked;
     console.log(terms);
+
+    // 11.2 get name and photo from the input field
+    const name = e.target.name.value;
+    const photo = e.target.photo.value;
+    console.log(name, photo);
 
     if (terms === false) {
       setErrorMsg("Please accept our terms and conditions.");
@@ -84,6 +90,18 @@ const Registar = () => {
 
         // 4.1 setSuccess true but it is commented because we have to success the email via sending a verification email 9.1
         // setSuccess(true);
+
+        // 11.3 i want to update user profile after successful email verification so call the function from firebase doc : build => authentication => view docs => web => manage users => "Update a user's profile"
+
+        // 11.4 first create an object user to save the data from input field
+        const user = {
+          displayName: name,
+          photoURL: photo,
+        };
+        // 11.5 call the function updateProfile and pass the auth.currentUser(from doc) & user as parameter. Then go to the console and also login from login page and go to login page console. see the update in displayName and photoURL.
+        updateProfile(auth.currentUser, user)
+          .then(() => console.log("user profile updated"))
+          .catch((err) => console.log(err.message));
       })
       .catch((err) => {
         console.log(err);
@@ -92,6 +110,8 @@ const Registar = () => {
       });
   };
   // 1.0 created two input field email, password
+
+  // 11.0 my requirement is update user profile during registration thats why created two input field name and photo
   return (
     <form
       onSubmit={handleRegistar}
@@ -99,8 +119,18 @@ const Registar = () => {
     >
       {/* Email field */}
       <h3 className="text-3xl font-bold">Please Register</h3>
+
       <div>
+        {/* 11.1 created name field */}
         <label className="input validator join-item">
+          <input type="text" placeholder="Your Name" name="name" />
+        </label>
+        <label className="input validator join-item mt-6">
+          {/* 11.1 created photo url field */}
+          <input type="text" placeholder="Your Photo" name="photo" />
+        </label>
+
+        <label className="input validator join-item mt-6">
           <svg
             className="h-[1em] opacity-50"
             xmlns="http://www.w3.org/2000/svg"
