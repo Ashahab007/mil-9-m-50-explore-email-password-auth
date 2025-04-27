@@ -1,4 +1,7 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../firebase.init";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
@@ -60,16 +63,27 @@ const Registar = () => {
     // 3.3 reset error i.e error message is not shown if the requirement is true
     setErrorMsg("");
 
+    // 9.0 My requirement is email verification. Verification should be done during account registration. For this reason from firebase website => build => Authentication => view docs => web => manage users => Send a user a verification email. U will get the code.
+
     // 4.2 if error not occured  nothing will show from success i.e it will remove the shown success message from the ui
     setSuccess(false);
 
     // 2.8 in handle register use createUserWithEmailAndPassword with 3 parameter from doc
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        console.log(result);
+        console.log(result.user);
+        console.log(result.user.emailVerified);
 
-        // 4.1 setSuccess true
-        setSuccess(true);
+        // 9.1 sending a verification email
+        sendEmailVerification(auth.currentUser).then(() => {
+          setSuccess(true);
+          alert("We sent u a verification email. Please check ur email.");
+        });
+
+        // 9.2 an email is sent for activation. In console u will see emailVerified: false. So for successfully email verification u can log in. That's why create a condition in login.jsx if not verified u will not log in
+
+        // 4.1 setSuccess true but it is commented because we have to success the email via sending a verification email 9.1
+        // setSuccess(true);
       })
       .catch((err) => {
         console.log(err);

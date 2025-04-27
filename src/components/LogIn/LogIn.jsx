@@ -18,7 +18,13 @@ const LogIn = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
         console.log(result.user);
-        setSuccess(true);
+
+        // 9.3 if email is not activated u cannot log in. this condition is set in log in page. as we found from console result.user.emailVerified === false.
+        if (!result.user.emailVerified) {
+          setErrorMsg("Please activate ur email first");
+        } else {
+          setSuccess(true);
+        }
       })
       .catch((err) => {
         console.log(err);
