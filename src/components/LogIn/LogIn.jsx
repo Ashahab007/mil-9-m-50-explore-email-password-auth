@@ -42,10 +42,17 @@ const LogIn = () => {
   const handleForgetPassword = () => {
     console.log(emailRef.current.value);
     const email = emailRef.current.value;
+    // for auto reset message from ui
+    setErrorMsg("");
 
     sendPasswordResetEmail(auth, email)
-      .then(() => alert("An email has sent."))
-      .catch((err) => console.log(err.message));
+      .then(() =>
+        alert("A password reset email has sent. Please check ur email.")
+      )
+      .catch((err) => {
+        console.log(err.message);
+        setErrorMsg(err.message);
+      });
   };
   return (
     <div className="hero bg-base-200 min-h-screen">
